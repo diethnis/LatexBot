@@ -2,8 +2,6 @@
 \usepackage{amsmath}
 \usepackage{color}
 \usepackage[usenames,dvipsnames,svgnames,table]{xcolor}
-\usepackage[utf8]{inputenc}
-
 
 \usepackage[version=3]{mhchem} % Package for chemical equation typesetting
 \usepackage{siunitx} % Provides the \SI{}{} and \si{} command for typesetting SI units
@@ -19,30 +17,25 @@
 
 \graphicspath{ {images/} } % to add images, put them in a folder in the same directory called "images"
 
-%\usepackage{fourier} % Use the Adobe Utopia font for the document, and adds other nice spacing things. 
-
-\usepackage[T1]{fontenc} % Use 8-bit encoding that has 256 glyphs
 \usepackage[english]{babel} % English language/hyphenation
 \usepackage{amsmath,amsfonts,amsthm,amssymb} % Math packages
 \usepackage{mathtools} %still more math packages
 
-\usepackage{physics} %does physics stuff? I'm not using it because it defines abs and norm in a shitty way, which i redefined below. however, it DOES do partial derivatives in a nice way... oh well, i guess i'll define those too.
+\usepackage{physics} %does physics stuff? 
 \usepackage{xparse} %required for physics package. 
 
 \usepackage{graphicx}
-
 \usepackage{bm} % adds bolding options
 
 
-%\usepackage{bbold}
-\usepackage{titlesec} %allows title editing!
 
+\usepackage{titlesec} %allows title editing!
 \usepackage{xcolor} %allows nice color changes!
 \usepackage{fancyhdr} %allows nice header editing!
-
 \usepackage{../longdiv} %long division %using \longdiv{12075}{4655}
 \usepackage{polynom} %polynomial stuff, like \polyadd, \polylongdiv, \polygcd 
 \usepackage{cancel}
+\usepackage{xeCJK}
 
 %----------------------------------------------------------------------------------------
 %	OCD FORMATTING STUFF
@@ -62,7 +55,6 @@
 %------------HEADER AND FOOTER STUFF
 
 \pagenumbering{gobble}
-\renewcommand{\headrulewidth}{0.0pt} %LINELESS HEADERS
 
 
 %----------------------------------------------------------------------------------------
@@ -95,8 +87,7 @@
 
 
 \renewcommand{\cal}[1]{\mathcal{#1}}
-
-
+\newcommand{\del}{\nabla}
 \newcommand{\eps}{\epsilon}
 \newcommand{\ld}{\lambda}
 \newcommand{\stm}{\setminus}
@@ -116,11 +107,6 @@
   }%
 }
 
-\newcommand{\noin}{\noindent}
-\newcommand{\pixy}{\includegraphics[width = 0.7\textwidth]}
-\newcommand{\pixyy}{\includegraphics[width = \textwidth]}
-
-%\newcommand{\pdv}[2]{\frac{\partial #1}{\partial #2}}%defined in physics package
 
 
 %------------ begin defining paired delimiters
@@ -192,17 +178,10 @@
 \theoremstyle{remark}
 \newtheorem*{remark}{Remark}
 
-\newcommand{\sx}[1]{\subsection{#1}} %for def, theorem, etc
-\newcommand{\ssx}[1]{\subsubsection*{#1}} %for proofs
-
-\newcommand\sxe[1]{
-  \titleformat*{\subsection}{\small\itshape\sffamily\color{crimson}}\subsection{#1}\titleformat*{\subsection}{\large\bfseries\sffamily\color{BLUE}}
-} %for examples
 
 \newcommand{\x}[1]{\textit{#1}} %x is for italix
 \newcommand{\w}[1]{\text{#1}} %w stands for words
  
-\newcommand{\del}{\nabla}
  
 
 \begin{document}

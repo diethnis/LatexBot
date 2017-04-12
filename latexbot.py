@@ -19,9 +19,9 @@ I am the *LaTeX* math bot, written by DX Smiley at https://github.com/DXsmiley/L
 
 To use me, type in !tex before your expression (on the ***same line***, not beneath it). Or you can begin in an align* environment by using !eqn instead of !tex, rendering dollar signs unnecessary.
 
-Note that use of _, *, and \ will sometimes conflict with the Markdown syntax built into discord, though the bot can usually parse it right anyway. In particular, \\\\ to create a newline will not display properly---you must use \\\\\\\.
+Note that use of _, *, and \ will sometimes appear to conflict with the Markdown syntax built into discord, though the bot will parse it right, regardless. This is because it does not read the formatted text but rather the *unformatted* text. For instance, a newline in LaTeX (two backslashes) will appear as only one backslash in chat because of Markdown, but will still typeset correctly.
 
-If you get a syntax error, the best way to edit it is to click "edit message" and copy from there, rather than the formatted output Discord gives you, with italics and all.
+If you get a syntax error, the right way to copy paste your previous code to edit it it is to click "edit message" and copy from there, rather than the formatted output Discord gives you.
 
 **Examples**
 

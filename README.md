@@ -1,10 +1,10 @@
 # Discord LaTeX Bot
 
-This is a bot for [Discord](https://discordapp.com/) that automatically renders LaTeX formulas.
+This is a bot for [Discord](https://discordapp.com/) that automatically renders LaTeX formulas. It requires discord.py, xelatex, and imagemagick as dependencies. 
 
 ## Invocation
 
-By default, the bot can be invoked with `!tex [latex code]`. Using `!help` or `!help tex` will private message the help.
+By default, the bot can be invoked with `!tex [latex code]`. Using `!helptex` will private message the help. You can also use `!eqn`, to typeset with slightly different behavior, as explained in the help blurp from `!helptex`.  
 
 Example: `!tex \sqrt{a^2 + b^2} = c`
 
@@ -33,7 +33,7 @@ The list of servers and channels that the bot may access. The rules are as follo
 4. The bot may access any *channel* on the whitelist.
 5. The bot may not access any *channel* on the blacklist.
 
-Rules with larger numbers overrule the smaller ones.
+Rules with at the top of the list overrule those below. 
 
 ### Renderer
 
