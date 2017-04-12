@@ -1,17 +1,8 @@
-# Settings File
-settings.json
-
 # files used in image generation
-*.tex
-*.dvi
-*.log
-*.png
+queries
 
 # Python
 __pycache__
-
-# Remove ignore for template file
-!template.tex
 
 #PyCharm
 .idea/

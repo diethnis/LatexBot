@@ -6,29 +6,34 @@ import json
 import shutil
 import asyncio
 import sys
+import subprocess
 
 import chanrestrict
 
+QUERIES_SUBDIR="queries"
 LATEX_TEMPLATE="template.tex"
 
+
 HELP_MESSAGE = r"""
-Hello! I'm the *LaTeX* math bot!
+I am the *LaTeX* math bot, written by DX Smiley at https://github.com/DXsmiley/LatexBot. I am running on one of hikaslap's computers right now, so once he leaves or turns off his computer, I'm gone, too.
 
-You can type mathematical *LaTeX* into the chat and I'll automatically render it!
+To use me, type in !tex before your expression (on the ***same line***, not beneath it). Or you can begin in an align* environment by using !eqn instead of !tex, rendering dollar signs unnecessary.
 
-Simply use the `!tex` command.
+Note that use of _, *, and \ will sometimes conflict with the Markdown syntax built into discord, though the bot can usually parse it right anyway. In particular, \\\\ to create a newline will not display properly---you must use \\\\\\\.
+
+If you get a syntax error, the best way to edit it is to click "edit message" and copy from there, rather than the formatted output Discord gives you, with italics and all.
 
 **Examples**
 
-`!tex x = 7`
+`!tex $$x = 7$$`
 
-`!tex \sqrt{a^2 + b^2} = c`
+`!tex \[ \sqrt{a^2 + b^2} = c \]`
 
-`!tex \int_0^{2\pi} \sin{(4\theta)} \mathrm{d}\theta`
+`!tex Let's integrate $\int_0^{2\pi} \sin{(4\theta)} \mathrm{d}\theta$.`
 
-**Notes**
+`!eqn \lim_{n \to \infty} \frac{sin(n)}{n} = 0`
 
-Using the `\begin` or `\end` in the *LaTeX* will probably result in something failing.
+
 
 """
 
@@ -38,16 +43,7 @@ class LatexBot(discord.Client):
 	def __init__(self):
 		super().__init__()
 
-		self.check_for_config()
 		self.settings = json.loads(open('settings.json').read())
-
-		# Quick and dirty defaults of colour settings, if not already present in the settings
-		if 'latex' not in self.settings:
-			self.settings['latex'] = {
-							'background-colour': '36393E',
-							'text-colour': 'DBDBDB',
-							'dpi': '200'
-			}
 
 		chanrestrict.setup(self.settings['channels']['whitelist'],
 							self.settings['channels']['blacklist'])
@@ -59,14 +55,10 @@ class LatexBot(discord.Client):
 			self.login(self.settings['login']['email'], self.settings['login']['password'])
 			self.run()
 		else:
-			raise Exception('Bad config: "login_method" should set to "login" or "token"')
+			raise Exception('Bad config: "login_method" should set to "account" or "token"')
 
-	# Check that config exists
-	def check_for_config(self):
-		if not os.path.isfile('settings.json'):
-			shutil.copyfile('settings_default.json', 'settings.json')
-			print('Now you can go and edit `settings.json`.')
-			print('See README.md for more information on these settings.')
+		if not os.path.exists(QUERIES_SUBDIR):
+			os.makedirs(QUERIES_SUBDIR)
 
 	def vprint(self, *args, **kwargs):
 		if self.settings.get('verbose', False):
@@ -89,56 +81,70 @@ class LatexBot(discord.Client):
 			for c in self.settings['commands']['render']:
 				if msg.startswith(c):
 					latex = msg[len(c):].strip()
-					self.vprint('Latex:', latex)
+					await self.handle_latex(message.channel, latex, is_eqn=False)
+					return
 
-					num = str(random.randint(0, 2 ** 31))
-					if self.settings['renderer'] == 'external':
-						fn = self.generate_image_online(latex)
-					if self.settings['renderer'] == 'local':
-						fn = self.generate_image(latex, num)
-						# raise Exception('TODO: Renable local generation')
-
-					if fn and os.path.getsize(fn) > 0:
-						await self.send_file(message.channel, fn)
-						self.cleanup_output_files(num)
-						self.vprint('Success!')
-					else:
-						await self.send_message(message.channel, 'Something broke. Check the syntax of your message. :frowning:')
-						self.cleanup_output_files(num)
-						self.vprint('Failure.')
-
-					break
+			for c in self.settings['commands']['equation']:
+				if msg.startswith(c):
+					latex = msg[len(c):].strip()
+					await self.handle_latex(message.channel, latex, is_eqn=True)
+					return
 
 			if msg in self.settings['commands']['help']:
 				self.vprint('Showing help')
-				await self.send_message(message.author, HELP_MESSAGE)
+				await self.send_message(message.channel, HELP_MESSAGE)
+
+	async def handle_latex(self, channel, latex, is_eqn):
+		num = str(random.randint(0, 2 ** 31))
+		self.vprint('Latex query %s: %s' % (num, latex))
+		if is_eqn:
+			latex = "$\\displaystyle\n" + latex + "\n$"
+
+		if self.settings['renderer'] == 'external':
+			fn = self.generate_image_online(latex)
+		if self.settings['renderer'] == 'local':
+			try:
+				fn = self.generate_image(latex, num)
+			except subprocess.CalledProcessError as e:
+				decoded = e.output.decode("utf-8").replace('\r', '').replace('\\n', '\n')
+				self.vprint('Latex error for file %s:\n%s' % (num, decoded))
+				decoded = decoded.split('\n', 1)[-1].split('\n')
+				decoded = '\n'.join([x for x in decoded if not num in x])
+				await self.send_message(channel, '```Error:\n%s```' % decoded)
+				return
+			except Exception as e:
+				await self.send_message(channel, '!!! Error! Sadly, I can\'t tell you exactly what went wrong...')
+				print('Unexpected exception!\n%s' % e)
+				return
+
+		if fn and os.path.getsize(fn) > 0:
+			await self.send_file(channel, fn)
+			self.vprint('Success.')
+		else:
+			await self.send_message(channel, '!!! Error! Sadly, I can\'t tell you exactly what went wrong...')
+			self.vprint('Failure.')
 
 	# Generate LaTeX locally. Is there such things as rogue LaTeX code?
 	def generate_image(self, latex, name):
-
-		latex_file = name + '.tex'
-		dvi_file = name + '.dvi'
-		png_file = name + '1.png'
+		latex_filename = name + '.tex'
+		latex_file = os.path.join(QUERIES_SUBDIR, latex_filename)
+		pdf_file = os.path.join(QUERIES_SUBDIR, name + '.pdf')
+		png_file = os.path.join(QUERIES_SUBDIR, name + '.png')
 
 		with open(LATEX_TEMPLATE, 'r') as textemplatefile:
 			textemplate = textemplatefile.read()
 
 			with open(latex_file, 'w') as tex:
-				backgroundcolour = self.settings['latex']['background-colour']
-				textcolour = self.settings['latex']['text-colour']
-				latex = textemplate.replace('__DATA__', latex).replace('__BGCOLOUR__', backgroundcolour).replace('__TEXTCOLOUR__', textcolour)
-
-				tex.write(latex)
+				tex.write(textemplate.replace('__DATA__', latex))
 				tex.flush()
 				tex.close()
 
-		imagedpi = self.settings['latex']['dpi']
-		latexsuccess = os.system('latex -quiet -interaction=nonstopmode ' + latex_file)
-		if latexsuccess == 0:
-			os.system('dvipng -q* -D {0} -T tight '.format(imagedpi) + dvi_file)
-			return png_file
-		else:
-			return ''
+		texfot = 'texfot --ignore Warning --ignore "Output written" --ignore "This is XeTeX" --ignore "No pages" --no-stderr'
+		result = subprocess.check_output(
+				'cd %s && %s xelatex -interaction=nonstopmode %s' % (QUERIES_SUBDIR, texfot, latex_filename),
+				shell=True)
+		os.system('pdfcrop --margins "5 0 5 0" %s %s && convert -density 300 %s -quality 90 -background white -alpha remove %s' % (pdf_file, pdf_file, pdf_file, png_file))
+		return png_file
 
 	# More unpredictable, but probably safer for my computer.
 	def generate_image_online(self, latex):
@@ -147,17 +153,6 @@ class LatexBot(discord.Client):
 		fn = str(random.randint(0, 2 ** 31)) + '.png'
 		urllib.request.urlretrieve(url, fn)
 		return fn
-
-	# Removes the generated output files for a given name
-	def cleanup_output_files(self, outputnum):
-		try:
-			os.remove(outputnum + '.tex')
-			os.remove(outputnum + '.dvi')
-			os.remove(outputnum + '.aux')
-			os.remove(outputnum + '.log')
-			os.remove(outputnum + '1.png')
-		except OSError:
-			pass
 
 
 if __name__ == "__main__":
