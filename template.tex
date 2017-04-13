@@ -1,41 +1,70 @@
-\documentclass{article}
-\usepackage{amsmath}
-\usepackage{color}
-\usepackage[usenames,dvipsnames,svgnames,table]{xcolor}
+\documentclass{article} % for xelatex
 
-\usepackage[version=3]{mhchem} % Package for chemical equation typesetting
-\usepackage{siunitx} % Provides the \SI{}{} and \si{} command for typesetting SI units
-\usepackage{natbib} % Required to change bibliography style to APA
+% GRAPHICS AND COLOR
+%\usepackage{color} % redundancy with xcolor?
+\usepackage[svgnames]{xcolor}
 \usepackage{graphicx} % Required to add images
 \usepackage{tikz} %adds tons of graphics options
+\usepackage{pstricks}
+\usepackage{psvectorian}
+\usepackage{pgfornament}
+
+% FORMATTING, STYLE, ENCODING, FONTS
+%\usepackage[utf8]{inputenc} % not necessary in xelatex
 %\usepackage{tikzsymbols} %adds tons of graphics symbols, but i didnt get it to work
+%\usepackage{natbib} % Required to change bibliography style to APA
 \usepackage{soul} %adds letterspacing, underlining, and strikethrough using \st{}
-\usepackage{wasysym} %smileyfaces using \smiley
-\usepackage{faktor} %for quotient spaces
-\usepackage{url} %for urls, lol
-
-
-\graphicspath{ {images/} } % to add images, put them in a folder in the same directory called "images"
-
-\usepackage[english]{babel} % English language/hyphenation
-\usepackage{amsmath,amsfonts,amsthm,amssymb} % Math packages
-\usepackage{mathtools} %still more math packages
-
-\usepackage{physics} %does physics stuff? 
-\usepackage{xparse} %required for physics package. 
-
-\usepackage{graphicx}
-\usepackage{bm} % adds bolding options
-
-
-
+%\usepackage{url} %for urls, lol
+%\usepackage{fourier} % Use the Adobe Utopia font for the document, and adds other nice spacing things.
+%\usepackage[T1]{fontenc} % Use 8-bit encoding that has 256 glyphs
+%\usepackage[english]{babel} % English language/hyphenation
+%\usepackage{xparse} %required for physics package.
+%\usepackage{bm} % adds bolding options
+%\usepackage{bbold}
 \usepackage{titlesec} %allows title editing!
-\usepackage{xcolor} %allows nice color changes!
-\usepackage{fancyhdr} %allows nice header editing!
-\usepackage{../longdiv} %long division %using \longdiv{12075}{4655}
-\usepackage{polynom} %polynomial stuff, like \polyadd, \polylongdiv, \polygcd 
-\usepackage{cancel}
+%\usepackage{fancyhdr} %allows nice header editing!
+\usepackage{../boustrophedon}
+\usepackage{blindtext}
+\usepackage{fontspec}
+\usepackage{xunicode}
+\usepackage{polyglossia}
 \usepackage{xeCJK}
+\usepackage{geometry}
+\usepackage{hyperref}
+\usepackage{etoolbox} % for advanced programming tex
+\usepackage{multicol}
+
+% CHEMISTRY, PHYSICS, SCIENCES
+\usepackage[version=3]{mhchem} % Package for chemical equation typesetting
+\usepackage{siunitx} % Provides the \SI{}{} and \si{} command for SI units
+%\usepackage{physics}
+% does physics stuff? I'm not using it because it
+% defines abs and norm in a shitty way, which i redefined below. however,
+% it DOES do partial derivatives in a nice way
+
+% MATHEMATICS
+\usepackage{mathtools} %autoloads amsmath
+%\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amsthm}
+\usepackage{amssymb}
+\usepackage{wasysym} %smileyfaces using \smiley, must be loaded after ams*
+%\usepackage{faktor} %for quotient spaces
+\usepackage{pgfplots}
+\usepackage{../longdiv} %long division %using \longdiv{12075}{4655}
+\usepackage{polynom} %polynomial stuff, like \polyadd, \polylongdiv, \polygcd
+\usepackage{cancel} %slash through terms
+
+% PACKAGE SETTINGS
+%\graphicspath{ {images/} } % to add images, put them in subdirectory "images"
+\pgfplotsset{compat=1.14}
+\geometry{paperwidth=15cm,paperheight=\maxdimen,margin=0.5cm}
+
+\setmonofont{Unifont}
+\setCJKmainfont{ipaexm.ttf}
+%\setCJKmainfont{Source Han Sans}
+\newCJKfontfamily\japanesefont{IPAMincho}
+\newCJKfontfamily\koreanfont{Baekmuk Gulim}
 
 %----------------------------------------------------------------------------------------
 %	OCD FORMATTING STUFF
@@ -45,45 +74,35 @@
 %\numberwithin{figure}{section} % Number figures within sections (i.e. 1.1, 1.2, 2.1, 2.2 instead of 1, 2, 3, 4)
 %\numberwithin{table}{section} % Number tables within sections (i.e. 1.1, 1.2, 2.1, 2.2 instead of 1, 2, 3, 4)
 
-
-
-
-
 %\allsectionsfont{\raggedright}
-
 
 %------------HEADER AND FOOTER STUFF
 
 \pagenumbering{gobble}
+%\renewcommand{\headrulewidth}{0.0pt} %LINELESS HEADERS
 
-
-%----------------------------------------------------------------------------------------
-%     NEW COMMANDS
-%----------------------------------------------------------------------------------------
-
-
-
-\DeclareMathOperator{\Img}{Img} 
+% NEW OPERATORS
+\DeclareMathOperator{\Img}{Img}
 \DeclareMathOperator{\Aut}{Aut}
-\DeclareMathOperator{\spanof}{span} 
-\DeclareMathOperator{\Span}{Span} 
-\DeclareMathOperator{\GF}{GF} 
-\DeclareMathOperator{\Gal}{Gal} 
-\DeclareMathOperator{\charac}{char} 
-\DeclareMathOperator{\id}{id} 
-\DeclareMathOperator{\rref}{rref} 
+\DeclareMathOperator{\spanof}{span}
+\DeclareMathOperator{\Span}{Span}
+\DeclareMathOperator{\GF}{GF}
+\DeclareMathOperator{\Gal}{Gal}
+\DeclareMathOperator{\charac}{char}
+\DeclareMathOperator{\id}{id}
+\DeclareMathOperator{\rref}{rref}
 
-\DeclareMathOperator{\realpart}{Re} 
-\DeclareMathOperator{\re}{Re} 
-\DeclareMathOperator{\im}{Im} 
-\DeclareMathOperator{\support}{supp} 
-\DeclareMathOperator{\supp}{supp} 
-\DeclareMathOperator{\sinc}{sinc} 
+\DeclareMathOperator{\realpart}{Re}
+\DeclareMathOperator{\re}{Re}
+\DeclareMathOperator{\im}{Im}
+\DeclareMathOperator{\support}{supp}
+\DeclareMathOperator{\supp}{supp}
+\DeclareMathOperator{\sinc}{sinc}
 \DeclareMathOperator{\sign}{sgn}
 \DeclareMathOperator{\sgn}{sgn}
 \DeclareMathOperator{\esssup}{ess\ sup}
-\DeclareMathOperator{\essinf}{ess\ inf}  
-\DeclareMathOperator*{\argmin}{\arg\!\min} 
+\DeclareMathOperator{\essinf}{ess\ inf}
+\DeclareMathOperator{\argmin}{arg\!min}
 
 
 \renewcommand{\cal}[1]{\mathcal{#1}}
@@ -93,9 +112,9 @@
 \newcommand{\stm}{\setminus}
 \newcommand{\bb}[1]{\mathbb{#1}}
 \newcommand{\Lim}[1]{\raisebox{0.5ex}{\scalebox{0.8}{$\displaystyle \lim_{#1}\;$}}}
-\let\oldsubset\subset
-\let\subset\subseteq
-\let\psubset\oldsubset %stands for proper subset
+\let\oldsubset\subset%
+\let\subset\subseteq%
+\let\psubset\oldsubset% stands for proper subset
 \newcommand{\sbst}{\subset}
 \renewcommand{\emptyset}{\varnothing}
 
@@ -103,7 +122,7 @@
 \newcommand{\ndivides}{%
   \mathrel{\mkern.5mu % small adjustment2
     % superimpose \nmid to \big|
-    \ooalign{\hidewidth$\big|$\hidewidth\cr$\nmid$\cr}%
+    \ooalign{\hidewidth$\big|$\hidewidth\\$\nmid$\\}%
   }%
 }
 
@@ -113,25 +132,25 @@
 %\newcommand{\pr}[1]{\left({#1}\right)} this doesn't compile, but...
 \newcommand{\pr}[1]{\left(#1\right)}
 \newcommand{\br}[1]{\left[#1\right]}
+\newcommand{\pmat}[1]{\begin{pmatrix}#1\end{pmatrix}}
+\newcommand{\bmat}[1]{\begin{bmatrix}#1\end{bmatrix}}
 
-\let\abs\undefined
-\let\norm\undefined
+\let\abs\undefined%
+\let\norm\undefined%
 
 \DeclarePairedDelimiter\abs{\lvert}{\rvert} %defined in physics package
 \DeclarePairedDelimiter\norm{\lVert}{\rVert} %defined in physics package
 \DeclarePairedDelimiter\gen{\langle}{\rangle}
 
 
-
-
 % Swap the definition of \abs* and \norm*, so that \abs
-% and \norm resizes the size of the brackets, and the 
+% and \norm resizes the size of the brackets, and the
 % starred version does not.
 \makeatletter
-\let\oldabs\abs
+\let\oldabs\abs%
 \def\abs{\@ifstar{\oldabs}{\oldabs*}}
 %
-\let\oldnorm\norm
+\let\oldnorm\norm%
 \def\norm{\@ifstar{\oldnorm}{\oldnorm*}}
 \makeatother
 
@@ -140,24 +159,20 @@
 % Swap the definition of \section*, \subsection*, so that they are not numbered
 
 \makeatletter
-\let\oldsection\section
+\let\oldsection\section%
 \def\section{\@ifstar{\oldsection}{\oldsection*}}
 %
 \makeatletter
-\let\oldsubsection\subsection
+\let\oldsubsection\subsection%
 \def\subsection{\@ifstar{\oldsubsection}{\oldsubsection*}}
 
 
-
-
-%\s is the command for subscripts. 
+%\s is the command for subscripts.
 \newcommand{\s}[1]{\textup{#1}} %because of amsmath, textup is scalable
 % Next, define various freqently-used variable names using the \V macro:
 \newcommand\Initial{\s{Initial}}
 \newcommand\Final{\s{Final}}
 
-
- 
 
 \newenvironment{ncenter}
  {\parskip=3mm\par\nopagebreak\centering}
@@ -181,11 +196,17 @@
 
 \newcommand{\x}[1]{\textit{#1}} %x is for italix
 \newcommand{\w}[1]{\text{#1}} %w stands for words
- 
- 
+
 
 \begin{document}
 
+\setbox0=\vbox{
 __DATA__
+}
+\dimen0=\dp0
+\pdfpageheight=\dimexpr\ht0+1cm\relax
+\ifdim\pdfpageheight<2cm \pdfpageheight=2cm \fi
+\unvbox0\kern-\dimen0
+
 
 \end{document}

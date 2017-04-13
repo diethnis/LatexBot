@@ -12,7 +12,8 @@ import chanrestrict
 
 QUERIES_SUBDIR="queries"
 LATEX_TEMPLATE="template.tex"
-
+USER_AGENT = ' '.join(['Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36',
+	'(KTHML, like Gecko) Chrome/57.0.2987.133 Safari/537.36'])
 
 HELP_MESSAGE = r"""
 I am the *LaTeX* math bot, written by DX Smiley at https://github.com/DXsmiley/LatexBot. I am running on one of hikaslap's computers right now, so once he leaves or turns off his computer, I'm gone, too.
@@ -25,14 +26,15 @@ If you get a syntax error, the right way to copy paste your previous code to edi
 
 **Examples**
 
-`!tex $$x = 7$$`
+```tex
+!tex $$x = 7$$
 
-`!tex \[ \sqrt{a^2 + b^2} = c \]`
+!tex \[ \sqrt{a^2 + b^2} = c \]
 
-`!tex Let's integrate $\int_0^{2\pi} \sin{(4\theta)} \mathrm{d}\theta$.`
+!tex Let's integrate $\int_0^{2\pi} \sin{(4\theta)} \mathrm{d}\theta$.
 
-`!eqn \lim_{n \to \infty} \frac{sin(n)}{n} = 0`
-
+!eqn \lim_{n \to \infty} \frac{sin(n)}{n} = 0
+```
 
 
 """
@@ -52,8 +54,7 @@ class LatexBot(discord.Client):
 		if self.settings['login_method'] == 'token':
 			self.run(self.settings['login']['token'])
 		elif self.settings['login_method'] == 'account':
-			self.login(self.settings['login']['email'], self.settings['login']['password'])
-			self.run()
+			self.run(self.settings['login']['email'],self.settings['login']['password'])
 		else:
 			raise Exception('Bad config: "login_method" should set to "account" or "token"')
 
@@ -64,19 +65,32 @@ class LatexBot(discord.Client):
 		if self.settings.get('verbose', False):
 			print(*args, **kwargs)
 
+	def datafromurl(self, *args, **kwargs):
+		try:
+			headers = {}
+			headers['User-Agent'] = USER_AGENT
+			req = urllib.request.Request(self, headers = headers)
+			data = urllib.request.urlopen(req).read().decode('utf-8').replace('\r','')
+			return(data)
+		except Exception as e:
+			print(str(e))
+
 	# Outputs bot info to user
 	@asyncio.coroutine
 	def on_ready(self):
-		print('------')
-		print('Logged in as')
-		print(self.user.name)
-		print(self.user.id)
-		print('------')
+		print('Logged in to Discord as {}, with ID: {}'.format(self.user.name,self.user.id))
+		print('-'*20)
 
 	async def on_message(self, message):
 		if chanrestrict.check(message):
 
 			msg = message.content
+			
+			for c in self.settings['commands']['remote']:
+				if msg.startswith(c):
+					latex = LatexBot.datafromurl(msg[len(c):].strip())
+					await self.handle_latex(message.channel, latex, is_eqn=False)
+					return
 
 			for c in self.settings['commands']['render']:
 				if msg.startswith(c):
@@ -143,7 +157,7 @@ class LatexBot(discord.Client):
 		result = subprocess.check_output(
 				'cd %s && %s xelatex -interaction=nonstopmode %s' % (QUERIES_SUBDIR, texfot, latex_filename),
 				shell=True)
-		os.system('pdfcrop --margins "5 0 5 0" %s %s && convert -density 300 %s -quality 90 -background white -alpha remove %s' % (pdf_file, pdf_file, pdf_file, png_file))
+		os.system('pdfcrop --margins "5 0 5 0" %s %s && convert -density 300 %s -quality 100 -background white -alpha remove %s' % (pdf_file, pdf_file, pdf_file, png_file))
 		return png_file
 
 	# More unpredictable, but probably safer for my computer.

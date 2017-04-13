@@ -1,0 +1,54 @@
+% Boustrophedon package for LaTeX.
+% * Originally written by Andreas Wagner:
+%  GitHub: https://github.com/lowfatcomputing/latex-boustrophedon
+% * Modified by Hironobu YAMASHITA (a.k.a. Acetaminophen)
+%  Blog: http://acetaminophen.hatenablog.com/
+%  Twitter: @aminophen
+\NeedsTeXFormat{LaTeX2e}
+\RequirePackage{environ}
+\RequirePackage{graphicx}
+\ProvidesPackage{boustrophedon}[2015/07/24 Boustrophedon and Rongorongo formatting package.]
+\newbox\linebox
+\newcount\mycount
+
+\def\splitlines{%
+  \setbox\linebox\lastbox
+  \ifvoid\linebox
+    \noindent\ignorespaces
+  \else
+    \unskip\unpenalty
+    \begingroup\splitlines\space\endgroup
+    \processline
+  \fi
+}
+
+\NewEnviron{boustrophedon}{%
+  \mycount=0
+  \def\processline{%
+    \global\advance\mycount by 1
+    \ifodd\mycount
+      \box\linebox
+    \else
+      \makebox[\textwidth][c]{\smash{\reflectbox{\box\linebox}}}%
+    \fi
+  }
+  \vbox{\BODY\par\splitlines}
+}
+
+\NewEnviron{rongorongo}{%
+  \mycount=0
+  \def\processline{%
+    \global\advance\mycount by 1
+    \ifodd\mycount
+      \box\linebox
+    \else
+      \makebox[\textwidth][c]{\smash{\rotatebox[origin=c]{180}{\box\linebox}}}%
+    \fi
+  }
+  \vbox{\BODY\par\splitlines}
+}
+
+\endinput
+
+%%
+%% End of file `boustrophedon.sty'.
