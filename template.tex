@@ -1,83 +1,83 @@
-\documentclass{article} % for xelatex
+\documentclass{article} % for XeLaTeX
 
 % GRAPHICS AND COLOR
-%\usepackage{color} % redundancy with xcolor?
-\usepackage[svgnames]{xcolor}
-\usepackage{graphicx} % Required to add images
-\usepackage{tikz} %adds tons of graphics options
+\usepackage[usenames,dvipsnames,svgnames,table]{xcolor}
+\usepackage{graphicx}
+\usepackage{tikz}
 \usepackage{pstricks}
 \usepackage{psvectorian}
 \usepackage{pgfornament}
 
 % FORMATTING, STYLE, ENCODING, FONTS
-%\usepackage[utf8]{inputenc} % not necessary in xelatex
-%\usepackage{tikzsymbols} %adds tons of graphics symbols, but i didnt get it to work
+%\usepackage{tikzsymbols} % adds tons of graphics symbols, but I didnt get it to work
 %\usepackage{natbib} % Required to change bibliography style to APA
-\usepackage{soul} %adds letterspacing, underlining, and strikethrough using \st{}
-%\usepackage{url} %for urls, lol
-%\usepackage{fourier} % Use the Adobe Utopia font for the document, and adds other nice spacing things.
+\usepackage{soul} % adds letterspacing, underlining, and strikethrough using \st{}
+%\usepackage{url}
+%\usepackage{fourier} % Use Adobe Utopia font for the document, and adds other nice spacing things.
 %\usepackage[T1]{fontenc} % Use 8-bit encoding that has 256 glyphs
 %\usepackage[english]{babel} % English language/hyphenation
-%\usepackage{xparse} %required for physics package.
-%\usepackage{bm} % adds bolding options
-%\usepackage{bbold}
-\usepackage{titlesec} %allows title editing!
-%\usepackage{fancyhdr} %allows nice header editing!
+%\usepackage{xparse} % required for physics package.
+\usepackage{titlesec} % allows title editing!
+%\usepackage{fancyhdr} % allows nice header editing!
 \usepackage{../boustrophedon}
-\usepackage{blindtext}
+\usepackage{blindtext} % filler text
 \usepackage{fontspec}
-\usepackage{xunicode}
+%\usepackage{xunicode} % already loaded?
 \usepackage{polyglossia}
 \usepackage{xeCJK}
 \usepackage{geometry}
 \usepackage{hyperref}
 \usepackage{etoolbox} % for advanced programming tex
 \usepackage{multicol}
+\usepackage{ragged2e} % allows more non-justified alignments
+\usepackage{sectsty} % section header styles
+%\usepackage[veryoldstyle,nomath,nott]{kpfonts} % allows old ligatures
 
 % CHEMISTRY, PHYSICS, SCIENCES
 \usepackage[version=3]{mhchem} % Package for chemical equation typesetting
 \usepackage{siunitx} % Provides the \SI{}{} and \si{} command for SI units
 %\usepackage{physics}
-% does physics stuff? I'm not using it because it
-% defines abs and norm in a shitty way, which i redefined below. however,
-% it DOES do partial derivatives in a nice way
+% Does physics stuff? I'm not using it because it defines abs and norm in a bad
+% way, which I redefined below. However, it DOES do partial derivatives nicely
 
 % MATHEMATICS
-\usepackage{mathtools} %autoloads amsmath
-%\usepackage{amsmath}
+\usepackage{mathtools} % autoloads amsmath
 \usepackage{amsfonts}
 \usepackage{amsthm}
 \usepackage{amssymb}
-\usepackage{wasysym} %smileyfaces using \smiley, must be loaded after ams*
-%\usepackage{faktor} %for quotient spaces
+\usepackage{mathrsfs}
+\usepackage{wasysym} % smileyfaces using \smiley, must be loaded after ams*
+%\usepackage{faktor} % for quotient spaces
 \usepackage{pgfplots}
-\usepackage{../longdiv} %long division %using \longdiv{12075}{4655}
-\usepackage{polynom} %polynomial stuff, like \polyadd, \polylongdiv, \polygcd
-\usepackage{cancel} %slash through terms
+\usepackage{../longdiv} % long division using \longdiv{12075}{4655}
+\usepackage{polynom} % polynomial stuff, like \polyadd, \polylongdiv, \polygcd
+\usepackage{cancel} % slash through terms
 
 % PACKAGE SETTINGS
 %\graphicspath{ {images/} } % to add images, put them in subdirectory "images"
 \pgfplotsset{compat=1.14}
-\geometry{paperwidth=15cm,paperheight=\maxdimen,margin=0.5cm}
+\geometry{paperwidth=16cm,paperheight=\maxdimen,margin=0.5cm}
 
+%\setmainfont[Ligatures={Rare, Historic, Contextual}]{Linux Libertine}
 \setmonofont{Unifont}
 \setCJKmainfont{ipaexm.ttf}
 %\setCJKmainfont{Source Han Sans}
-\newCJKfontfamily\japanesefont{IPAMincho}
-\newCJKfontfamily\koreanfont{Baekmuk Gulim}
+%\newCJKfontfamily\japanesefont{IPAMincho} %ipam.ttf
+\newCJKfontfamily\japanesefont{Sazanami Mincho}
+\newCJKfontfamily\koreanfont{Baekmuk Batang}
 
-%----------------------------------------------------------------------------------------
+%------------------------------------------------------------------------------
 %	OCD FORMATTING STUFF
-%----------------------------------------------------------------------------------------
+%------------------------------------------------------------------------------
 
-%\numberwithin{equation}{section} % Number equations within sections (i.e. 1.1, 1.2, 2.1, 2.2 instead of 1, 2, 3, 4)
-%\numberwithin{figure}{section} % Number figures within sections (i.e. 1.1, 1.2, 2.1, 2.2 instead of 1, 2, 3, 4)
-%\numberwithin{table}{section} % Number tables within sections (i.e. 1.1, 1.2, 2.1, 2.2 instead of 1, 2, 3, 4)
+% Number within sections (i.e. 1.1, 1.2, 2.1, 2.2 instead of 1, 2, 3, 4)
+%\numberwithin{equation}{section}
+%\numberwithin{figure}{section}
+%\numberwithin{table}{section}
 
 %\allsectionsfont{\raggedright}
 
-%------------HEADER AND FOOTER STUFF
-
+% HEADER AND FOOTER
 \pagenumbering{gobble}
 %\renewcommand{\headrulewidth}{0.0pt} %LINELESS HEADERS
 
@@ -102,9 +102,9 @@
 \DeclareMathOperator{\sgn}{sgn}
 \DeclareMathOperator{\esssup}{ess\ sup}
 \DeclareMathOperator{\essinf}{ess\ inf}
-\DeclareMathOperator{\argmin}{arg\!min}
+\DeclareMathOperator{\argmin}{arg\ min}
 
-
+% ABBREVIATIONS, SHORTHAND NOTATION
 \renewcommand{\cal}[1]{\mathcal{#1}}
 \newcommand{\del}{\nabla}
 \newcommand{\eps}{\epsilon}
@@ -118,88 +118,76 @@
 \newcommand{\sbst}{\subset}
 \renewcommand{\emptyset}{\varnothing}
 
-\newcommand{\divides}{\bigm|}
-\newcommand{\ndivides}{%
-  \mathrel{\mkern.5mu % small adjustment2
-    % superimpose \nmid to \big|
-    \ooalign{\hidewidth$\big|$\hidewidth\\$\nmid$\\}%
-  }%
-}
-
-
-
-%------------ begin defining paired delimiters
-%\newcommand{\pr}[1]{\left({#1}\right)} this doesn't compile, but...
-\newcommand{\pr}[1]{\left(#1\right)}
-\newcommand{\br}[1]{\left[#1\right]}
-\newcommand{\pmat}[1]{\begin{pmatrix}#1\end{pmatrix}}
-\newcommand{\bmat}[1]{\begin{bmatrix}#1\end{bmatrix}}
-
-\let\abs\undefined%
-\let\norm\undefined%
-
-\DeclarePairedDelimiter\abs{\lvert}{\rvert} %defined in physics package
-\DeclarePairedDelimiter\norm{\lVert}{\rVert} %defined in physics package
-\DeclarePairedDelimiter\gen{\langle}{\rangle}
-
-
-% Swap the definition of \abs* and \norm*, so that \abs
-% and \norm resizes the size of the brackets, and the
-% starred version does not.
-\makeatletter
-\let\oldabs\abs%
-\def\abs{\@ifstar{\oldabs}{\oldabs*}}
-%
-\let\oldnorm\norm%
-\def\norm{\@ifstar{\oldnorm}{\oldnorm*}}
-\makeatother
-
-%------------end defining paired delimiters
-
-% Swap the definition of \section*, \subsection*, so that they are not numbered
-
-\makeatletter
-\let\oldsection\section%
-\def\section{\@ifstar{\oldsection}{\oldsection*}}
-%
-\makeatletter
-\let\oldsubsection\subsection%
-\def\subsection{\@ifstar{\oldsubsection}{\oldsubsection*}}
-
-
 %\s is the command for subscripts.
 \newcommand{\s}[1]{\textup{#1}} %because of amsmath, textup is scalable
 % Next, define various freqently-used variable names using the \V macro:
 \newcommand\Initial{\s{Initial}}
 \newcommand\Final{\s{Final}}
 
+\newcommand{\divides}{\bigm|}
+\newcommand{\ndivides}{\nmid}
 
+\newcommand{\x}[1]{\textit{#1}} %x is for italix
+\newcommand{\w}[1]{\text{#1}} %w stands for words
+
+% matrix shortcuts
+\newcommand{\pmat}[1]{\begin{pmatrix}#1\end{pmatrix}}
+\newcommand{\bmat}[1]{\begin{bmatrix}#1\end{bmatrix}}
+
+
+% PAIRED DELIMITERS
+\newcommand{\pr}[1]{\left(#1\right)}
+\newcommand{\br}[1]{\left[#1\right]}
+
+\let\abs\undefined%
+\let\norm\undefined%
+\DeclarePairedDelimiter\abs{\lvert}{\rvert} %defined in physics package
+\DeclarePairedDelimiter\norm{\lVert}{\rVert} %defined in physics package
+\DeclarePairedDelimiter\gen{\langle}{\rangle}
+
+% Swap the definition of \abs* and \norm*, so that \abs and \norm resizes
+% the size of the brackets, and the starred version does not.
+\makeatletter
+\let\oldabs\abs%
+\def\abs{\@ifstar{\oldabs}{\oldabs*}}
+\let\oldnorm\norm%
+\def\norm{\@ifstar{\oldnorm}{\oldnorm*}}
+\makeatother
+
+% Swap the definition of \section*, \subsection*, so that they are not numbered
+\makeatletter
+\let\oldsection\section%
+\def\section{\@ifstar{\oldsection}{\oldsection*}}
+\makeatletter
+\let\oldsubsection\subsection%
+\def\subsection{\@ifstar{\oldsubsection}{\oldsubsection*}}
+
+
+% NEW ENVIRONMENTS, STYLES
 \newenvironment{ncenter}
- {\parskip=3mm\par\nopagebreak\centering}
- {\par\noindent\ignorespacesafterend}
+{\parskip=3mm\par\nopagebreak\centering}
+{\par\noindent\ignorespacesafterend}
  
- \newenvironment{nproof}
- {\renewcommand{\qedsymbol}{}\proof}
- {\endproof}
+\newenvironment{nproof}
+{\renewcommand{\qedsymbol}{}\proof}
+{\endproof}
  
 \newenvironment{wts}
-  {\renewcommand{\qedsymbol}{}\begin{proof}[Want to show.]}
-  {\end{proof}}
- 
- \newtheorem*{theorem}{Theorem}
- \newtheorem*{lemma}{Lemma}
+{\renewcommand{\qedsymbol}{}\begin{proof}[Want to show.]}
+{\end{proof}}
+
+% PROOFS HEADER NAMES
+\newtheorem*{theorem}{Theorem}
+\newtheorem*{lemma}{Lemma}
 \theoremstyle{definition}
 \newtheorem*{definition}{Definition}
 \theoremstyle{remark}
 \newtheorem*{remark}{Remark}
 
 
-\newcommand{\x}[1]{\textit{#1}} %x is for italix
-\newcommand{\w}[1]{\text{#1}} %w stands for words
-
-
+% FINALLY, BEGIN DOCUMENT
 \begin{document}
-
+% auto-expand page length
 \setbox0=\vbox{
 __DATA__
 }
@@ -207,6 +195,5 @@ __DATA__
 \pdfpageheight=\dimexpr\ht0+1cm\relax
 \ifdim\pdfpageheight<2cm \pdfpageheight=2cm \fi
 \unvbox0\kern-\dimen0
-
 
 \end{document}
