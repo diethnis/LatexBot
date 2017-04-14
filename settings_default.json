@@ -14,7 +14,9 @@
 	},
 	"commands": {
 		"render": ["!tex "],
-		"help": ["!help", "!help tex"]
+		"remote": ["!remote "],
+		"equation": ["!eqn "],
+		"help": ["!help", "!help tex", "!texhelp"]
 	},
 	"latex": {
 		"background-colour": "36393E",
